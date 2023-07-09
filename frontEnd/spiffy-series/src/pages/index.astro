@@ -1,0 +1,67 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+export interface Todos {
+  id: string;
+  title: string;
+  description: string;
+}
+
+const response = await fetch("http://localhost:8080");
+const result: Todos[] = await response.json();
+---
+
+<Layout title="Welcome to Astro.">
+  <main>
+    <form id="post">
+      <label for="title">Title:</label>
+      <input id="title" type="text" name="title" />
+
+      <label for="description">Description:</label>
+      <textarea id="description" name="description"></textarea>
+
+      <button type="submit">Aqui</button>
+    </form>
+    {
+      result.map((todo) => (
+        <>
+          <h1>{todo.title}</h1>
+          <p>{todo.description}</p>
+        </>
+      ))
+    }
+
+    <script>
+      function postData(event) {
+        event.preventDefault();
+        const form = event.target as HTMLFormElement;
+        const url = "http://localhost:8080";
+        const data = {
+          title: form.title.value,
+          description: form.description.value,
+        };
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+        location.reload();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("post");
+        form.addEventListener("submit", postData);
+      });
+    </script>
+  </main>
+</Layout>
