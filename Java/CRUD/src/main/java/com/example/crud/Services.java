@@ -1,7 +1,9 @@
 package com.example.crud;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,14 +13,27 @@ public class Services {
 
     private List<Todos> todos = new ArrayList<>();
 
+    private final   FileManager fileManager;
+
+    public Services(FileManager fileManager) {
+        this.fileManager = fileManager;
+    }
 
     public List<Todos> findAllTodos(){
-        return  todos;
+        try {
+            return fileManager.readFile().orElseThrow(()-> new RuntimeException("Error Reading File"));
+        }catch (Exception e){
+           throw  new RuntimeException(e);
+        }
     }
 
     public  void create(Todos todo){
         todo.setId(UUID.randomUUID());
-        todos.add(todo);
+        try {
+            fileManager.writeFile(todo);
+        }catch (Exception e){
+            throw  new RuntimeException(e);
+        }
     }
 
     public void  deleted(UUID id){

@@ -1,35 +1,44 @@
 ---
+import Card from "../components/Card.astro";
 import Layout from "../layouts/Layout.astro";
 
 export interface Todos {
-  id: string;
+  id?: string;
   title: string;
   description: string;
 }
 
 const response = await fetch("http://localhost:8080");
+console.log(response);
 const result: Todos[] = await response.json();
+console.log(result);
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
-    <form id="post">
-      <label for="title">Title:</label>
-      <input id="title" type="text" name="title" />
-
-      <label for="description">Description:</label>
-      <textarea id="description" name="description"></textarea>
+    <form id="post" class="input-container">
+      <div>
+        <label for="title">Title:</label>
+        <input id="title" type="text" name="title" class="input" />
+      </div>
+      <div>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" class="input"></textarea>
+      </div>
 
       <button type="submit">Aqui</button>
     </form>
-    {
-      result.map((todo) => (
-        <>
-          <h1>{todo.title}</h1>
-          <p>{todo.description}</p>
-        </>
-      ))
-    }
+    <div class="container">
+      {
+        result.map((todo) => (
+          <Card
+            id={todo.id}
+            title={todo.title}
+            description={todo.description}
+          />
+        ))
+      }
+    </div>
 
     <script>
       function postData(event) {
@@ -65,3 +74,23 @@ const result: Todos[] = await response.json();
     </script>
   </main>
 </Layout>
+
+<style>
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .input {
+    border: 0;
+    border-radius: 1rem;
+    padding: 0.5rem;
+  }
+  .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    align-items: center;
+  }
+</style>

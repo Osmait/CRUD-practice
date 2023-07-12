@@ -1,15 +1,19 @@
 package cmd
 
 import (
+	"context"
+	"time"
+
 	filemanager "github.com/osmait/crud/internal/fileManager"
 	internal "github.com/osmait/crud/internal/server"
 	storage "github.com/osmait/crud/internal/storage"
 )
 
 const (
-	host = "localhost"
-	port = 3000
-	path = "../db.json"
+	host            = "localhost"
+	port            = 8000
+	path            = "../db.json"
+	shutdownTimeout = 10 * time.Second
 )
 
 func Run() error {
@@ -17,6 +21,6 @@ func Run() error {
 	postRepository := storage.NewPostRepository(fileManage)
 
 	postService := internal.NewPostService(*postRepository)
-	srv := internal.NewServer(host, port, *postService)
-	return srv.Run()
+	ctx, srv := internal.NewServer(context.Background(), host, port, *postService, shutdownTimeout)
+	return srv.Run(ctx)
 }
