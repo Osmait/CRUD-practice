@@ -2,8 +2,14 @@ package com.example.crud;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,9 +36,7 @@ public class Services {
     public Todos findbyId(UUID id){
         try {
             List<Todos> list =   fileManager.readFile().orElseThrow(()-> new RuntimeException("Error "));
-            System.out.println(list);
             List<Todos> todos1 =  list.stream().filter((todo)-> todo.getId().equals(id)).toList();
-            System.out.println(todos1);
          return todos1.get(0);
         }catch (Exception e){
             throw new RuntimeException(e);
@@ -46,6 +50,28 @@ public class Services {
         }catch (Exception e){
             throw  new RuntimeException(e);
         }
+    }
+
+    public void UploadImg(MultipartFile file, UUID id){
+
+        Todos todo = this.findbyId(id);
+        String fileUrl = Math.random()+"-"+file.getOriginalFilename();
+        String fileName = StringUtils.cleanPath(fileUrl);
+
+
+        Path uploadPath = Paths.get("img");
+        Path filePath = uploadPath.resolve(fileName);
+
+        try {
+            Files.createDirectories(uploadPath);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            todo.setImg(fileUrl);
+            this.create(todo);
+        }catch (Exception e){
+            throw  new RuntimeException(e);
+
+        }
+
     }
 
     public void  deleted(UUID id){

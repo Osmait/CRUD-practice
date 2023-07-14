@@ -40,22 +40,10 @@ public class Controller {
     }
 
     @PostMapping("/img/{id}")
-    public  ResponseEntity<String>upload(@RequestParam("file") MultipartFile file, @PathVariable UUID id) throws IOException {
-        Todos todo = services.findbyId(id);
-        String fileUrl = Math.random()+"-"+file.getOriginalFilename();
-        String fileName = StringUtils.cleanPath(fileUrl);
+    public  ResponseEntity<String>upload(@RequestParam("file") MultipartFile file, @PathVariable UUID id)  {
 
-
-        Path uploadPath = Paths.get("img");
-        Path filePath = uploadPath.resolve(fileName);
-
-
-        Files.createDirectories(uploadPath);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        todo.setImg(fileUrl);
-        services.create(todo);
-
-        return new ResponseEntity<>(fileUrl, HttpStatus.OK);
+        services.UploadImg(file, id);
+        return new ResponseEntity<>("Upload", HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
