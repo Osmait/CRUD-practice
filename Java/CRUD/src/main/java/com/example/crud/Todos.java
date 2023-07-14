@@ -8,6 +8,16 @@ public class Todos {
     private UUID id;
     private String title;
     private String Description;
+    private String img;
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+
 
     public UUID getId() {
         return id;

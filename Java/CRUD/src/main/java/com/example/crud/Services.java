@@ -27,6 +27,18 @@ public class Services {
         }
     }
 
+    public Todos findbyId(UUID id){
+        try {
+            List<Todos> list =   fileManager.readFile().orElseThrow(()-> new RuntimeException("Error "));
+            System.out.println(list);
+            List<Todos> todos1 =  list.stream().filter((todo)-> todo.getId().equals(id)).toList();
+            System.out.println(todos1);
+         return todos1.get(0);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+    }
     public  void create(Todos todo){
         todo.setId(UUID.randomUUID());
         try {
