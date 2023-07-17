@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crudgo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crudgo
+  template:
+    metadata:
+      labels:
+        app: crudgo
+    spec:
+      containers:
+        - name: crudgo
+          image: osmait/crudgo:1
+          ports:
+            - containerPort: 8080

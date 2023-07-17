@@ -32,9 +32,12 @@ func NewServer(ctx context.Context, host string, port uint, postService PostServ
 }
 
 func (s *Server) routes() {
-
+	s.engine.GET("/heal", func(ctx *gin.Context) {
+		ctx.String(http.StatusOK, "hello word ")
+	})
 	s.engine.GET("/", FindPost(s.PostService))
 	s.engine.POST("/", CreatedPost(s.PostService))
+	s.engine.POST("/upload", Upload())
 
 }
 func (s *Server) Run(ctx context.Context) error {

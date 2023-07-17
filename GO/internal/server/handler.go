@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,5 +27,18 @@ func CreatedPost(postService PostService) gin.HandlerFunc {
 
 		postService.Created(ctx, request)
 		ctx.Status(http.StatusCreated)
+	}
+}
+
+func Upload() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		file, _ := ctx.FormFile("file")
+		log.Println(file.Filename)
+		dts := fmt.Sprintf("../upload/%s", file.Filename)
+		ctx.SaveUploadedFile(file, dts)
+
+		ctx.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
+
 	}
 }

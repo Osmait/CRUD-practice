@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/osmait/crud/internal/domain"
 )
@@ -20,10 +21,14 @@ func NewFileManager(path string) *FileManager {
 
 func (f *FileManager) Get() []domain.Post {
 	file, err := ioutil.ReadFile(f.FilePath)
-	if err != nil {
-		log.Fatalf("Error Read File")
-	}
 	var post []domain.Post
+	if err != nil {
+
+		os.Create("db.json")
+		return post
+
+	}
+
 	err = json.Unmarshal(file, &post)
 
 	if err != nil {
