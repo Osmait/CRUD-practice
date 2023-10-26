@@ -19,6 +19,13 @@ const (
 func Run() error {
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
+	if host == "" {
+		host = "0.0.0.0"
+	}
+
+	if port == "" {
+		port = "8080"
+	}
 	port2, _ := strconv.ParseUint(port, 10, 64)
 	fileManage := filemanager.NewFileManager(path)
 	postRepository := storage.NewPostRepository(fileManage)

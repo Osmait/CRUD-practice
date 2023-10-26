@@ -9,6 +9,8 @@ COPY . .
 
 # Compila la aplicación
 RUN go build -o crud ./cmd
+ENV HOST 0.0.0.0
+ENV PORT 8080
 
 # Expone el puerto en el que se ejecutará la aplicación
 EXPOSE 8080

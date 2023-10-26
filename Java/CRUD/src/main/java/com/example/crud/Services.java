@@ -1,11 +1,11 @@
 package com.example.crud;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,10 +18,12 @@ import java.util.UUID;
 public class Services {
 
     private List<Todos> todos = new ArrayList<>();
+    private final  SimpMessagingTemplate messagingTemplate;
 
     private final   FileManager fileManager;
 
-    public Services(FileManager fileManager) {
+    public Services(SimpMessagingTemplate messagingTemplate, FileManager fileManager) {
+        this.messagingTemplate = messagingTemplate;
         this.fileManager = fileManager;
     }
 
@@ -47,6 +49,7 @@ public class Services {
         todo.setId(UUID.randomUUID());
         try {
             fileManager.writeFile(todo);
+            messagingTemplate.convertAndSend("/topic/posts",todo);
         }catch (Exception e){
             throw  new RuntimeException(e);
         }

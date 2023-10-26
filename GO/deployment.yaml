@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: crudgo
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: crudgo
@@ -14,6 +14,11 @@ spec:
     spec:
       containers:
         - name: crudgo
-          image: osmait/crudgo:1
+          image: osmait/crudgo:latest
           ports:
             - containerPort: 8080
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "8080"
